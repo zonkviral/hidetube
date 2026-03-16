@@ -1,0 +1,14 @@
+{
+  "extends": ["stylelint-config-standard", "stylelint-config-recess-order"],
+  "rules": {
+    "no-empty-source": null,
+    "at-rule-no-unknown": true,
+    "selector-class-pattern": [
+      "^[a-z0-9]+(?:__[a-z0-9]+(?:-[a-z0-9]+)*)?(?:--[a-z0-9]+(?:-[a-z0-9]+)*)?$",
+      {
+        "message": "Selector class name should follow BEM convention (e.g., block__element--modifier)."
+      }
+    ]
+  },
+  "ignoreFiles": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "node_modules/**", "build/**"]
+}
