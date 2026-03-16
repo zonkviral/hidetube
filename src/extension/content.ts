@@ -15,6 +15,29 @@ if (!window._myExtensionScriptInjected) {
 
   let isVisible = true;
 
+  const waitForPlayer = () => {
+    return new Promise<void>((resolve) => {
+      if (document.querySelector(".html5-video-player")) {
+        resolve();
+        return;
+      }
+
+      const observer = new MutationObserver(() => {
+        if (document.querySelector(".html5-video-player")) {
+          observer.disconnect();
+          resolve();
+        }
+      });
+
+      observer.observe(document.body, { childList: true, subtree: true });
+
+      window.setTimeout(() => {
+        observer.disconnect();
+        resolve();
+      }, 3000);
+    });
+  };
+
   const applyVisibility = (visible: boolean) => {
     isVisible = visible;
     const display = isVisible ? "" : "none";
@@ -25,7 +48,17 @@ if (!window._myExtensionScriptInjected) {
       document.querySelector(".ytp-chrome-top"),
       document.querySelector(".annotation"),
       document.querySelector(".ytp-overlays-container"),
+      document.querySelector("#player-control-overlay.fadein .player-controls-content"),
     ];
+
+    const player = document.querySelector(".html5-video-player");
+    if (player instanceof HTMLElement) {
+      if (!isVisible) {
+        player.classList.add("ytp-hide-controls");
+      } else {
+        player.classList.remove("ytp-hide-controls");
+      }
+    }
 
     if (window.top !== window.self) {
       const pauseOverlay = document.querySelector(".ytp-pause-overlay-container");
@@ -38,6 +71,7 @@ if (!window._myExtensionScriptInjected) {
   };
 
   const bindKeyHandler = () => {
+    document.addEventListener("click", () => window.focus());
     document.addEventListener("keydown", (event) => {
       const searchInput = document.querySelector<HTMLInputElement>("input#search");
       const focusedElement = document.activeElement;
@@ -53,7 +87,7 @@ if (!window._myExtensionScriptInjected) {
           console.warn("Storage error:", err);
         });
 
-        getVisibility().then((visible) => applyVisibility(visible));
+        applyVisibility(isVisible);
       }
     });
   };
@@ -86,7 +120,7 @@ if (!window._myExtensionScriptInjected) {
       const hasUIElements =
         document.querySelector(".ytp-ce-element") ||
         document.querySelector(".ytp-chrome-bottom") ||
-        document.querySelector(".ytp-pause-overlay-container");
+        document.querySelector(".html5-video-player");
 
       if (observerTimeout !== null) return;
 
@@ -98,12 +132,16 @@ if (!window._myExtensionScriptInjected) {
       }, 300);
     });
 
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
+    observer.observe(document.body, { childList: true, subtree: true });
+  };
+
+  const initVisibility = () => {
+    waitForPlayer().then(() => {
+      getVisibility().then((visible) => applyVisibility(visible));
     });
   };
 
+  initVisibility();
   watchForPlayerUI();
   bindKeyHandler();
 }

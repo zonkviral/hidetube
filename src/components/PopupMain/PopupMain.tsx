@@ -1,10 +1,11 @@
 import React from "react";
 
+import browser from "webextension-polyfill";
+
 import { applyToIframe } from "../../utils/applyToIframe";
 import { sendVisibility } from "../../utils/sendVisibility";
 
 import "./PopupMain.css";
-import browser from "webextension-polyfill";
 
 type PopupMainProps = {
   isVisible: boolean;
@@ -23,10 +24,7 @@ export const PopupMain = ({ isVisible, setIsVisible }: PopupMainProps) => {
     }
 
     try {
-      const tabs = await browser.tabs.query({
-        active: true,
-        currentWindow: true,
-      });
+      const tabs = await browser.tabs.query({ active: true, currentWindow: true });
       const tab = tabs[0];
       if (!tab?.id) return;
 
@@ -36,12 +34,34 @@ export const PopupMain = ({ isVisible, setIsVisible }: PopupMainProps) => {
         } catch {
           await browser.scripting.executeScript({
             target: { tabId: tab.id },
-            files: ["src/extension/content.js"],
+            files: ["content.js"],
           });
+          await new Promise((r) => setTimeout(r, 100));
         }
         sendVisibility(tab.id, newState);
         return;
       }
+
+      const frames = await browser.webNavigation.getAllFrames({ tabId: tab.id });
+      const embedPatterns = ["youtube.com/embed", "youtube-nocookie.com/embed"];
+      const ytFrames = frames?.filter((f) => embedPatterns.some((p) => f.url.includes(p)));
+
+      if (ytFrames && ytFrames.length > 0) {
+        for (const frame of ytFrames) {
+          try {
+            await browser.tabs.sendMessage(tab.id, { type: "PING" }, { frameId: frame.frameId });
+          } catch {
+            await browser.scripting.executeScript({
+              target: { tabId: tab.id, frameIds: [frame.frameId] },
+              files: ["content.js"],
+            });
+            await new Promise((r) => setTimeout(r, 100));
+          }
+          sendVisibility(tab.id, newState, frame.frameId);
+        }
+        return;
+      }
+
       if (tab.url?.includes("youtube.com") || tab.url?.includes("youtube-nocookie.com")) {
         applyToIframe(tab);
       }

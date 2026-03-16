@@ -27,9 +27,9 @@
   "web_accessible_resources": [
     {
       "resources": ["src/extension/content.js"],
-      "matches": ["<all_urls>"]
+      "matches": ["*://*.youtube.com/*", "*://*.youtube-nocookie.com/*"]
     }
   ],
-  "host_permissions": ["*://*.youtube.com/*", "*://*.youtube-nocookie.com/*", "<all_urls>"],
-  "permissions": ["storage", "activeTab", "tabs", "scripting", "webNavigation"]
+  "host_permissions": ["*://*.youtube.com/*", "*://*.youtube-nocookie.com/*"],
+  "permissions": ["storage", "activeTab", "scripting", "webNavigation"]
 }

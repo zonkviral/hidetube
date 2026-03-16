@@ -1,6 +1,6 @@
 interface ApplyVisibilityMsg {
   type: "APPLY_VISIBILITY";
-  visible: boolean; // Adjust the type if needed
+  visible: boolean;
 }
 
 interface PingMsg {
@@ -8,3 +8,5 @@ interface PingMsg {
 }
 
 export type Message = ApplyVisibilityMsg | PingMsg;
+
+export type MessageResponse = { ok: true } | "PONG" | undefined;

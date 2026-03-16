@@ -4,6 +4,7 @@ import { applyToIframe } from "../utils/applyToIframe";
 import { injectContentScript } from "../utils/injectContentScript";
 import { sendVisibility } from "../utils/sendVisibility";
 import { getVisibility } from "../utils/getVisibility";
+import type { MessageResponse } from "./types";
 
 const isYouTubeVideoUrl = (url?: string) => url?.includes("youtube.com/watch");
 
@@ -15,7 +16,7 @@ const injectAndApplyVisibility = async (tabId: number) => {
     let needsInjection = false;
 
     try {
-      const response = await browser.tabs.sendMessage(tabId, { type: "PING" });
+      const response: MessageResponse = await browser.tabs.sendMessage(tabId, { type: "PING" });
       needsInjection = response !== "PONG";
     } catch {
       needsInjection = true;
