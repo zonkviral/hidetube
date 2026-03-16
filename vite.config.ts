@@ -15,7 +15,7 @@ export default defineConfig({
     webExtension({
       manifest: () =>
         JSON.parse(
-          readFileSync(path.resolve(__dirname, `manifests/manifest.${target}.json`), "utf-8"),
+          readFileSync(path.resolve(__dirname, `src/manifests/manifest.${target}.json`), "utf-8"),
         ),
     }),
   ],
