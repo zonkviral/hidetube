@@ -1,6 +1,6 @@
 # 🎥 HideTube
 
-A lightweight Chrome extension that hides YouTube's on-screen elements (like video overlays, annotations, and control bars) with a single keypress — for a cleaner, distraction-free viewing experience.
+A lightweight (Chrome & Firefox) extension that hides YouTube's on-screen elements (like video overlays, annotations, and control bars) with a single keypress — for a cleaner, distraction-free viewing experience.
 
 ![HideTube UI off](src/assets/ui_toggle_off.jpg) ![HideTube UI on](src/assets/ui_toggle_on.jpg)
 ![HideTube demo off](src/assets/demo_toggle_off.jpg)![HideTube demo on](src/assets/demo_toggle_on.jpg)
@@ -14,7 +14,7 @@ A lightweight Chrome extension that hides YouTube's on-screen elements (like vid
 - 🔄 Automatically re-applies toggle state when navigating videos
 - 🧠 Remembers settings even after tab switches or reloads
 - ⚡ Lightweight and efficient — no bloat
-- 🧩 Works seamlessly with embedded YouTube iframes
+- 🧩 Works with embedded YouTube iframes on any site
 
 ---
 
@@ -91,7 +91,7 @@ Until it's available in the Chrome Web Store, you can install it manually:
    - **For Chrome**
 
    ```bash
-   npm run build
+   npm run build:chrome
    ```
 
    - **For Firefox**
@@ -108,4 +108,4 @@ Until it's available in the Chrome Web Store, you can install it manually:
 5. Firefox:
    - Go to `about:debugging#/runtime/this-firefox`
    - Click Load Temporary Add-on
-   - Select the `hidetube-1.0.zip` file from the `web-ext-artifacts` folder
+   - Select the `hidetube-1.2.zip` file from the `web-ext-artifacts` folder
